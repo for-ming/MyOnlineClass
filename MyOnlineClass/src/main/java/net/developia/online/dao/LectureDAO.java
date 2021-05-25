@@ -1,6 +1,10 @@
 package net.developia.online.dao;
 
-public class LectureDAO {
-	// List<LectureDTO> searchLecture(String name) throws SQLException;
+import java.sql.SQLException;
+import java.util.List;
 
+import net.developia.online.dto.LectureDTO;
+
+public interface LectureDAO {
+	LectureDTO getLecture(long lectureNo) throws Exception;
 }

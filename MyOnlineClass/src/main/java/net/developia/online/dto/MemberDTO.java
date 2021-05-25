@@ -15,6 +15,7 @@ import lombok.ToString;
 public class MemberDTO implements Serializable{
 	private String id;
 	private String password;
+	private String name;
 	private String email;
 	private String phoneNumber;
 	
