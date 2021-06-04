@@ -2,10 +2,22 @@
  * reset
 */
 
-h2 {
+.lecture_name_class {
       	color:white;
       	padding: 0px 5px;
       	margin: 40px 200px 20px 200px;
+      	
+}
+
+.lecture_name_span{
+	  	color:white;
+      	/*padding: 10px 5px;*/
+      	
+}
+
+.lecture_name_span:hover{
+	color:aqua;
+	cursor: pointer;
 }
 
 p {
@@ -19,13 +31,15 @@ p {
 body{
 	margin:0;
 	
-	/*background-color:black;*/
-	background-color: #484848;
+	background-color: #121212;
+	
 }
+
 
 ul{
 	padding:0;
 }
+
 
 /*
  * video css
@@ -43,7 +57,7 @@ ul{
 
 .video__wrap > .video__contents{
 	float:left;
-	width:80%;
+	width:75%;
 }
 
 .video__wrap > .video__contents > .video__box{
@@ -78,6 +92,7 @@ ul{
 
 .video__wrap > .video__nav{
 	position: absolute;
+	/*text-align: center;*/
 	/*top:0;*/
 	right: 0;
 	width:20%;
@@ -87,9 +102,11 @@ ul{
 }
 
 .lecturer_div{
+     /*
      display: flex;
      justify-content: space-between;        
      margin: 10px 40px 10px 10px;
+     */
 }
 
 .vodSelect {
@@ -97,21 +114,104 @@ ul{
 	color: white !important;
 	border-radius: 5px !important;
 	/*border: 0;*/
-	margin: 12px !important;
+	margin: 5px 12px !important;
 	padding: 10px 50px !important;
 	width: 100% !important;
 }
-		
+
+.vodUpload {
+	
+	text-align: center;
+	/*box-shadow: inset -4px 0px 0px -15px #f7c5c0;*/
+	
+	background-color: #121212;
+	border-radius: 24px !important;
+	border: 1px solid #ffff;
+	display: inline-block;
+	cursor: pointer;
+	color: #ffffff;
+	font-family: Arial;
+	font-size: 15px;
+	font-weight: bold;
+	padding: 10px 50px !important;
+	text-decoration: none;
+	margin: 5px 12px !important;
+	width: 100% !important;
+	
+}
+
+/*
+.vodUpload:hover {
+	background: linear-gradient(to bottom, #e37b95 5%, #f27e9b 100%);
+	background-color: #e37b95;
+}
+*/
+
+.vodUpload:active {
+	position: relative;
+	top: 1px;
+}
+
+
+.vodDelete{
+	
+	text-align: center;
+	/*box-shadow: inset -4px 0px 0px -15px #f7c5c0;*/
+	background-color: #f21414;
+	border-radius: 24px !important;
+	border: 1px solid #f21414;
+	display: inline-block;
+	cursor: pointer;
+	color: #ffffff;
+	font-family: Arial;
+	font-size: 15px;
+	font-weight: bold;
+	padding: 10px 50px !important;
+	text-decoration: none;
+	margin: 5px 12px !important;
+	width: 100% !important;
+	
+}
+
+.vodDelete:active {
+	position: relative;
+	top: 1px;
+}
+
+
+.lectureDelete{
+	text-align: center;
+	/*box-shadow: inset -4px 0px 0px -15px #f7c5c0;*/
+	background-color: #f21414;
+	/*border-radius: 24px !important;*/
+	border: 1px solid #f21414;
+	display: inline-block;
+	cursor: pointer;
+	color: #ffffff;
+	font-family: Arial;
+	font-size: 15px;
+	font-weight: bold;
+	padding: 10px 50px !important;
+	text-decoration: none;
+	margin: 40px 12px !important;
+	width: 100% !important;
+}
+
+.lectureDelete:active {
+	position: relative;
+	top: 1px;
+}
+/*		
 .vodUpload{
 	background-color: rgb(255, 80, 90) !important;
 	color: white !important;
 	border-radius: 5px !important;
-	/*border: 0;*/
+	
 	margin: 12px !important;
 	width: 100% !important;
 	padding: 10px 50px !important;
 }
-
+*/
 
 
 /*
@@ -212,6 +312,8 @@ background: rgba(115, 133, 159, 0.75);
 
 .video__nav-top{
 	position: relative;
+	/*추가*/
+	width : 30%;
 }
 
 .video__nav-inner{
@@ -248,7 +350,7 @@ background: rgba(115, 133, 159, 0.75);
 
 .video__menu li.complate{
 	/*background-color: #f3f3f3;*/
-	background-color:black;
+	/*background-color:black;*/
 	
 	color:#999;
 }

@@ -14,7 +14,7 @@
 <link rel="icon" type="image/png" sizes="64x64"
 	href="${contextPath}/resources/image/classtok_favi4fa9.png" />
 <meta charset="UTF-8">
-<title>클래스톡 :: 함께 배우는 온라인 클래스 강의, 수업, 강좌 - 클래스톡</title>
+<title>클래스팡 :: MyOnlineClass</title>
 
 <!-- 폰트 스타일 시트 -->
 <link
@@ -111,9 +111,13 @@ a#MOVE_TOP_BTN {
 }
 </style>
 
-<c:import url="header2.jsp"></c:import>
+<c:import url="header.jsp"></c:import>
 </head>
 <body>
+	<!-- Page Preloder -->
+	<div id="preloder">
+		<div class="loader"></div>
+	</div>
 	<%
 	if (id == null || id == "") {
 		response.sendRedirect("login");
@@ -132,42 +136,48 @@ a#MOVE_TOP_BTN {
 			<div class="carousel-inner" role="listbox">
 				<div class="carousel-item active"
 					style="height: 425px; background-image: url('${contextPath}/resources/image/background.png')">
-					<div style="color: #fff; text-align: center; padding-top: 40px;">
-						<p style="display: inline-block; font-size: 29px; font-weight: 500;">
+					<div style="color: #fff; text-align: center; padding-top: 40px; padding-left: 60px;">
+						<p style="display: inline-block; font-size: 29px; font-weight: 500; padding-left: 100px;">
 							스타 강사로 데뷔하세요
 						</p>
 						<h3 style="display: inline-block; color: red; padding-bottom: 30px;">
 							.
 						</h3>
+						  <input type="button" class="btn btn-primary" onclick="duplicationNickname();" style="width:10%; visibility:hidden; display: inline; margin-left: 10px; border-color: #343a40; background-color: #343a40;" value="중복확인"/>
 						<br>
 						
-						<form id="register" method='POST' action="${contextPath}/registerAction" enctype="multipart/form-data">
+						<form name="registerForm" id="register" method='POST' action="${contextPath}/registerAction" enctype="multipart/form-data" onsubmit="registerCheck(event)">
 							<input type="hidden" value="${id}" name="id">
 							<input type="hidden" value="${name}" name="name"> 
 							<input type="hidden" value="${email}" name="email"> 
 							<input type="hidden" value="${phone}" name="phone"> 
 							
-							<div>
-								<div style="width: auto;">
-								<span style="position: relative; left: 40px; color: gray;">#</span>
+							    <div class="form-group" style="width: 50%; margin: 0 auto; overflow: hidden; padding-left: 10px;">
+							    	<span style="position: relative; left: 40px; color: gray;">#</span>
 								<input type="text" id="nickname" name="nickname" placeholder="원하시는 닉네임이 있으신가요?" 
 									   maxlength="10" autocomplete="off" required="required"
 									   style="width: 500px; height: 50px; border-radius: 30px; 
 									   border: 0; outline: 0; padding-left: 40px;">
 								<div id="nicknameCount" style="display: inline; padding-left: 10px;">(0 / 10)</div> 
-								</div>
-							</div> <br>
+								<input type="button" class="btn btn-primary" onclick="duplicationNickname();" style="display: inline; margin-left: 10px; border-color: #343a40; background-color: #343a40;" value="중복확인"/>
+          						</div>
+								<!-- <div style="width: auto;"> -->
 							
-							<div>
+								<!-- </div> -->
+							 <br>
+							 <div class="form-group" style="width: 50%;margin: 0 auto; overflow: hidden;">
 								<span style="position: relative; left: 40px; color: gray;">#</span>
 								<input type="text" id="introduce" name="introduce" placeholder="자신을 한 줄로 표현하세요." 
 									   maxlength="50" autocomplete="off" required="required"
 									   style="width: 500px; height: 50px; border-radius: 30px; 
 									   border: 0; outline: 0; padding-left: 40px;"> 
 							    <div id="introduceCount" style="display: inline; padding-left: 10px;">(0 / 30)</div> 
-							</div> <br>
+							    <input type="button"  class="btn btn-primary" onclick="duplicationNickname();" style="width:10%; visibility:hidden; display: inline; margin-left: 10px; border-color: #343a40; background-color: #343a40;" value="중복확인"/>
+							    </div>
+							<br>
 							
-							<div style="margin-left: 250px;">
+							<div style="margin-left: 175px;">
+								&nbsp; &nbsp; &nbsp; &nbsp;
 								<span style="position: relative; left: 40px; color: gray;">#</span>
 								<input type="text" placeholder="프로필 사진을 선택하세요." 
 									   maxlength="25" autocomplete="off" 
@@ -175,15 +185,101 @@ a#MOVE_TOP_BTN {
 									   border: 0; outline: 0; padding-left: 40px;" readonly>
 								<input type="file" accept="image/*" name="image" required="required"
 									   style="padding-left: 10px;">
+								 <input type="button"  class="btn btn-primary" onclick="duplicationNickname();" style="width:5px; visibility:hidden; display: inline; margin-left: 10px; border-color: #343a40; background-color: #343a40;" value="중복확인"/>
 							</div> <br> <br>
-							
+							<div style="padding-left: 80px;">
 							<input type="submit" value="신청하기" 
 								   style="width: 100px; border-radius: 30px; border: 0; outline: 0;">
+							<input type="button"  class="btn btn-primary" onclick="duplicationNickname();" style="width:10%; visibility:hidden; display: inline; margin-left: 10px; border-color: #343a40; background-color: #343a40;" value="중복확인"/>
+							</div>
 						</form>
 					</div>
 				</div>
 			</div>
 		</div>
 	</header>
+	<c:import url="footer.jsp"></c:import>
+	<script>
+	var nicknameck = 0;
+ 	function duplicationNickname() {
+ 		var nickname = $("#nickname").val();
+ 		$.ajax({
+				async: false,
+				type: 'POST',
+				data : {"nickname": nickname },
+				url : '/online/check/nicknamecheck',
+				success : function(data) {
+					if(data > 0) {
+						alert('실패', '이미 사용 중인 닉네임입니다. 다른 닉네임을 입력해주세요.', 'warning');
+	  					$("#nickname").focus();
+	  					nicknameck = 0;
+	  				} else {
+	  					alert('성공', '사용가능한 닉네임입니다.', 'success');
+	  					$('#nickname').focus();
+	  					nicknameck = 1;
+	  				}
+				},
+				error : function(error) {
+					alert('실패', 'error : ' + error, 'error');
+				}
+			});
+ 		
+ 	}
+	$('#nickname').on('keyup', function() {
+		nicknameck = 0;
+	});
+	function registerCheck(e) {
+		var form = document.registerForm;
+		e.preventDefault();	
+ 		if(nicknameck == 0) {
+ 			alert('실패', '닉네임 중복 여부를 확인해주세요.', 'warning');
+ 			return false;
+ 		} else {
+ 			swal({
+				title : '강사등록',
+				text : '강사로 등록하시겠습니까?',
+				icon : 'info',
+				buttons: {
+				    yes: {
+				    	text : "예",
+				    	value : true,
+						className : "swal-button"
+				    },
+				    no: {
+				    	text : "아니오",
+				    	value : false,
+				    	className : "swal-button"
+				    }
+				  }
+			}).then((value)=> {
+				switch(value) {
+				case true:
+					swal({
+						title : '성공',
+						text : '강사로 등록되었습니다.',
+						icon : 'success',
+						buttons: {
+							yes: {
+						    	text : "예",
+						    	value : true,
+								className : "swal-button"
+						    },
+						}
+					}).then((value) => {
+						switch(value) {
+						case true:
+							form.submit();
+							break;
+						}
+					});
+					break;
+				case false:
+					break;
+				}
+			});
+			return false;
+ 		}
+	}
+	</script>
 </body>
 </html>

@@ -7,21 +7,32 @@ import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import net.developia.online.dto.InstructorDTO;
+import net.developia.online.dto.LectureDTO;
 import net.developia.online.dto.VodDTO;
+import net.developia.online.services.InstructorService;
+import net.developia.online.services.LectureService;
+import net.developia.online.services.VodService;
+import net.sf.json.JSONArray;
 
 
 
@@ -29,23 +40,44 @@ import net.developia.online.dto.VodDTO;
 @Controller
 public class StreamingController{
 	
-	//private final String FOLDER_MOVIE = "../../../../../video/"; 
-	String DIR_PATH =  StreamingController.class.getResource(".").getPath();
+	@Autowired
+	private LectureService lectureService;
+	
+	@Autowired
+	private VodService vodService;
+	
+	@Autowired
+	private InstructorService instructorService;
+	
+	private static String thumbnail;
+	
+	private static String thumbnail_path;
+	
+	private static Map<Long,String> time_map = new HashMap<Long, String>(); 
+	
+	
+	@Value("upload.path")
+	String file_repo;
+	
+
+	String FOLDER_MOVIE = "C:/online/resources/lecture/";
 	//<source src="video/sample.mp4" type="video/mp4">
 	
-	@RequestMapping(value="/video/{video_name:.+}", method = RequestMethod.GET)
-	public String stream(@PathVariable("video_name") String video_name, HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException, IOException {
+	
+	/*@RequestMapping(value="/video/{lecture_id}/{video_name:.+}", method = RequestMethod.GET)*/
+	
+	@RequestMapping(value="/{lecture_name}/video/{video_name:.+}", method = RequestMethod.GET)
+	public String stream(@PathVariable("lecture_name") String lecture_name,
+			 @PathVariable("video_name") String video_name, 
+			 HttpSession session, HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException, IOException {
 		
+		String My_FOLDER_MOVIE = FOLDER_MOVIE+lecture_name+"/video/";
+		System.out.println("스트리밍 컨트롤러");
+		System.out.println(My_FOLDER_MOVIE);
 		
-		String FOLDER_MOVIE =DIR_PATH.replace("/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/wtpwebapps/MyOnlineClass/WEB-INF/classes/net/developia/online/controllers/",
-											  "/MyOnlineClass/MyOnlineClass/src/main/webapp/WEB-INF/video/");
-		//System.out.println(StreamingController.class.getResource(".").getPath());
-		//System.out.println(FOLDER_MOVIE + "현재 video 가져오는 경로");
 		//확장자 확인 //
-		System.out.println(video_name);
 		String[] filename_seperate = video_name.split("\\.");
 		
-		//ModelAndView mav = new ModelAndView();
 		
 		String exp;
 		if(filename_seperate.length <= 1) {
@@ -57,7 +89,7 @@ public class StreamingController{
 		}
 		
 		
-		File file = new File(FOLDER_MOVIE + video_name);
+		File file = new File(My_FOLDER_MOVIE + video_name);
 
 		System.out.println(video_name);
 		if(!file.exists()) throw new FileNotFoundException();
@@ -120,73 +152,187 @@ public class StreamingController{
 			randomFile.close();
 		}
 		
-		
-		
 		return null;
 	}
+
 	
-	@RequestMapping(value="/vodMain")
-	public ModelAndView vodMain(HttpServletRequest request, HttpServletResponse response) {
+	// URL : http://localhost/online/vodStreaming?no=1
+	
+	@RequestMapping(value="vodStreaming", produces = "application/json; charset=UTF-8") //강의에 대한 정보 반환
+	public ModelAndView vodStreaming(@RequestParam(required = true) long no, HttpSession session) {
 		
-		HttpSession session = request.getSession(true);
-		String user_id = (String)session.getAttribute("user_id");
+		//HttpSession session = request.getSession(true);
+		//String user_id = (String)session.getAttribute("user_id");
 		
-		ModelAndView mav = new ModelAndView();
 		
-		//ModelAndView mav = new ModelAndView("vodMain");
+		ModelAndView mav = new ModelAndView();		
+		
+		
+		String id = (String)session.getAttribute("id");
+		
+		
 		try {
 
-			//List<MyWordDTO> list = wordService.getWordList(user_id);
-			// 임의로 진행
-			List<VodDTO> list = new ArrayList<>();
-			VodDTO vodDTO= new VodDTO();
-			/*
-			vodDTO.setId(1);
-			vodDTO.setLesson(1);
-			vodDTO.setTitle("재미있는 스프링 환경설정");
-			vodDTO.setInformation("21:42");
-			vodDTO.setUrl("Forest.mp4");
-			list.add(vodDTO);
-			
-			VodDTO vod1DTO= new VodDTO();
-			vod1DTO.setId(1);
-			vod1DTO.setLesson(1);
-			vod1DTO.setTitle("씬나게 배워볼까용? DI");
-			vod1DTO.setInformation("12:42");
-			vod1DTO.setUrl("sample.mp4");
-			list.add(vod1DTO);
-			
-			VodDTO vodDTO2= new VodDTO();
-			vodDTO2.setId(1);
-			vodDTO2.setLesson(1);
-			vodDTO2.setTitle("배워보자!!!! AOP");
-			vodDTO2.setInformation("52:12");
-			vodDTO2.setUrl("sample2.mp4");
-			list.add(vodDTO2);
+			LectureDTO lectureDTO = new LectureDTO();
+			lectureDTO = lectureService.getLecture(no);
+			System.out.println(lectureDTO);
 			
 			
+			InstructorDTO instructorDTO =new InstructorDTO();  
+			instructorDTO =	instructorService.getInstructor(no);
 			
+			System.out.println(instructorDTO);
+			boolean isInstructor = false; 
+						
+			System.out.println("id, getid 확인");
+			System.out.println(id);
+			System.out.println(instructorDTO.getMember_id());
 			
-			mav.addObject("list", list);
-			*/
-			mav.setViewName("vodMain");
-			String viewName = mav.getViewName();
-			Map<String, Object> model = mav.getModel();
-			for(String key : model.keySet()) {
-				request.setAttribute(key, model.get(key));
+			if(id.equals(instructorDTO.getMember_id())) {
+				isInstructor = true;
 			}
 			
-			RequestDispatcher dispatcher = request.getRequestDispatcher(viewName);
+			System.out.println(isInstructor);
+			
+			
+			
+			//poster="ThumnailDownload/${lecture.name}/${lecture.thumbnail}" 
+			//poster="${pageContext.request.contextPath}/lectureThumbnail?name=동영상 업로드 방법&thumbnail=ClassPang.jpg"
+			//
+			thumbnail_path = "/online/lectureThumbnail?name="+ lectureDTO.getName() + "&thumbnail=";
+			System.out.println(thumbnail_path);
+			
+			thumbnail = lectureDTO.getThumbnail();
+			
+			
+			//개수 입력받기
+			String [] time_list = {"01:12","00:38","2:31", "00:48","00:32", "00:52"};
+			
+			
 
+			List<VodDTO> list = vodService.getVodList(no);
+			
+			
+			
+			
+			for(int i=0;i<list.size(); i++) {
+				time_map.put(list.get(i).getId(), time_list[i]);
+			}
+			
+			
+			for(int i=0;i<list.size(); i++) {
+				
+				list.get(i).setCnt(i+1);
+				list.get(i).setThumbnail(thumbnail);
+				list.get(i).setPoster(thumbnail_path+thumbnail);
+				//list.get(i).setTime(time_list[i]);
+				
+				list.get(i).setTime(time_map.get(list.get(i).getId()));
+				
+			}
+			
+			
+			System.out.println(list);
+			mav.setViewName("vodMain");
+			
+			JSONArray jsonArray = new JSONArray();
+			
+			boolean isVodList = false;
+			if(list.size() != 0) {
+				isVodList = true;
+			}
+			
+			mav.addObject("jsonList",jsonArray.fromObject(list));
+			
+			
+			mav.addObject("lectureDTO", lectureDTO);
+			
+			mav.addObject("instructorDTO", instructorDTO);
+			
+			mav.addObject("isInstructor", isInstructor);
+			
+			mav.addObject("isVodList",isVodList);
+			
 		} catch (Exception e) {
 			e.printStackTrace();
+			mav.addObject("msg", e.getMessage());
+			mav.addObject("url", "../");
 		}
-		
 		return mav;
-
+	
 	}
 	
 	
 	
+	@RequestMapping(value="/getVodUrl", method=RequestMethod.GET) //강의에 대한 정보 반환
+	public void getVodUrl(@RequestParam(required = true) long no, HttpSession session, Model model) {
+		
+		
+		
+		String id = (String)session.getAttribute("id");
+		
+		
+		try {
+
+			
+			List<VodDTO> list = vodService.getVodList(no);
+			
+			
+			JSONArray jsonArray = new JSONArray();
+			
+			model.addAttribute("jsonList",jsonArray.fromObject(list));
+			
+			//mav.addObject("jsonList",jsonArray.fromObject(list));
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			//mav.addObject("msg", e.getMessage());
+			//mav.addObject("url", "../");
+		}
+		//return mav;
 	
+	}
+	
+	
+	@ResponseBody
+	@RequestMapping(value = "vodDelete")
+	public List<VodDTO> vodDelete(String lecture_no, String del_no, HttpServletResponse response) throws Exception {
+		System.out.println("여기 왔네여?");
+		
+		vodService.deleteVOD(Long.parseLong(del_no));
+		List<VodDTO> list = new ArrayList<>();
+				
+		list = vodService.getVodList(Long.parseLong(lecture_no));
+		
+		
+		for(int i=0;i<list.size(); i++) {
+			
+			list.get(i).setCnt(i+1);
+			list.get(i).setThumbnail(thumbnail);
+			list.get(i).setPoster(thumbnail_path+thumbnail);
+			list.get(i).setTime(time_map.get(list.get(i).getId()));
+			
+		}
+		
+	
+		return list;
+		
+		
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "lectureDelete")
+	public void lectureDelete(String lecture_no, HttpSession session ,HttpServletResponse response) throws Exception {
+		System.out.println(" 강의 삭제하게여? "+ lecture_no);
+		
+		lectureService.deleteLecture(Long.parseLong(lecture_no));
+		System.out.println("삭제 됐네영");
+		
+		
+		
+		
+		
+	}
 }
+	
+
