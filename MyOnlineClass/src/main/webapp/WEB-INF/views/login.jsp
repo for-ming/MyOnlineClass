@@ -23,10 +23,14 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>로그인 | Hyundai ClassTok</title>
+  <title>로그인 :: MyOnlineClass</title>
 	<c:import url="header.jsp"></c:import>
 </head>
 <body>
+	<!-- Page Preloder -->
+	<div id="preloder">
+		<div class="loader"></div>
+	</div>
 <div class="table-content">
 	<div class="item"></div>
 </div>
@@ -79,5 +83,8 @@
 </div>
   <!-- Footer -->
   <c:import url="footer.jsp"></c:import>
+  	<!--  Bootstrap core JavaScript-->
+	<%-- <script src="<c:url value="/resources/vendor/jquery/jquery.min.js" />"></script> --%>
+	<script src="<c:url value="/resources/vendor/bootstrap/js/bootstrap.bundle.min.js" />"></script>
 </body>
 </html>

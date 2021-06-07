@@ -14,10 +14,10 @@ import net.developia.online.dto.MemberDTO;
 
 @Slf4j
 @Service
-public class MeberServiceImpl implements MemberService{
+public class MeberServiceImpl implements MemberService {
 	@Autowired
 	private MemberDAO memberDAO;
-	
+
 	@Override
 	public void join(HashMap<String, Object> map) throws Exception {
 		try {
@@ -53,7 +53,7 @@ public class MeberServiceImpl implements MemberService{
 	public void login(HashMap<String, Object> map) throws Exception {
 		try {
 			memberDAO.selectMember(map);
-			List<MemberDTO> output = (List)map.get("MemberList");
+			List<MemberDTO> output = (List) map.get("MemberList");
 			if (output.size() == 0) {
 				throw new RuntimeException("아이디 혹은 비밀번호가 일치하지 않습니다.");
 			}
@@ -130,7 +130,7 @@ public class MeberServiceImpl implements MemberService{
 			log.info(e.getMessage());
 			throw e;
 		}
-		
+
 	}
 
 	@Override
@@ -160,9 +160,9 @@ public class MeberServiceImpl implements MemberService{
 			log.info(e.getMessage());
 			throw e;
 		}
-		
+
 	}
-	
+
 	@Override
 	public void findPw(HashMap<String, Object> map) throws Exception {
 		// TODO Auto-generated method stub
@@ -186,7 +186,7 @@ public class MeberServiceImpl implements MemberService{
 			List<LectureDTO> output = (List) map.get("MemberLectureList");
 			if (output.size() == 0) {
 				throw new RuntimeException("등록된 과목이 없습니다.");
-			} 
+			}
 		} catch (Exception e) {
 			log.info(e.getMessage());
 			throw e;
@@ -197,6 +197,77 @@ public class MeberServiceImpl implements MemberService{
 	public void getMemberLectureDate(HashMap<String, Object> new_map) throws Exception {
 		try {
 			memberDAO.getMemberLectureDate(new_map);
+		} catch (Exception e) {
+			log.info(e.getMessage());
+			throw e;
+		}
+	}
+
+	@Override
+	public void getInstructorInfo(HashMap<String, Object> map) throws Exception {
+		try {
+			memberDAO.selectMemberById(map);
+			memberDAO.getInstructorInfo(map);
+		} catch (Exception e) {
+			log.info(e.getMessage());
+			throw e;
+		}
+	}
+
+	public List<LectureDTO> checkMemberLecture(HashMap<String, Object> map) throws Exception {
+		try {
+			memberDAO.getMemberLecture(map);
+			List<LectureDTO> output = (List) map.get("MemberLectureList");
+			return output;
+		} catch (Exception e) {
+			log.info(e.getMessage());
+			throw e;
+		}
+	}
+
+	@Override
+	public void getInstructorLecture(HashMap<String, Object> map) throws Exception {
+		try {
+			memberDAO.getInstructorLecture(map);
+		} catch (Exception e) {
+			log.info(e.getMessage());
+			throw e;
+		}
+	}
+
+	@Override
+	public void getLectureCount(HashMap<String, Object> map) throws Exception {
+		try {
+			memberDAO.getLectureCount(map);
+		} catch (Exception e) {
+			log.info(e.getMessage());
+			throw e;
+		}
+
+	}
+
+	@Override
+	public void getLectureInstructorInfo(HashMap<String, Object> map) throws Exception {
+		try {
+			memberDAO.getLectureInstructorInfo(map);
+			List<LectureDTO> output = (List) map.get("LectureInstructorList");
+			if (output.size() == 0) {
+				throw new RuntimeException("해당 과목의 강사가 아닙니다.");
+			}
+		} catch (Exception e) {
+			log.info(e.getMessage());
+			throw e;
+		}
+	}
+
+	@Override
+	public void getMemberByNickname(HashMap<String, Object> map) throws Exception {
+		try {
+			memberDAO.selectMemberByNickname(map);
+			List<MemberDTO> output = (List) map.get("MemberList");
+			if (output.size() != 0) {
+				throw new RuntimeException("닉네임이 존재합니다. 다른 닉네임을 입력해주세요.");
+			}
 		} catch (Exception e) {
 			log.info(e.getMessage());
 			throw e;

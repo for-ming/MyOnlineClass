@@ -27,6 +27,10 @@
  <c:import url="header.jsp"></c:import>
 </head>
 <body>
+	<!-- Page Preloder -->
+	<div id="preloder">
+		<div class="loader"></div>
+	</div>
   <!-- Page Content -->
   <div class="container">
     <!-- Page Heading/Breadcrumbs -->
@@ -41,7 +45,7 @@
     </ol>
    <div class="jumbotron" style="height: 100%">
       <h1 class="display-3" style="text-align: center;margin-top: -30px;margin-bottom: 50px;">회원가입</h1>
-      <form action="${pageContext.request.contextPath}/joinAction" class="was-validated" method="post" onsubmit="return validate()">
+      <form action="${pageContext.request.contextPath}/joinAction" class="was-validated" method="post" onsubmit="return registerCheck()">
           <div class="form-group" style="width: 50%;margin: 0 auto; overflow: hidden;">
             <input type="text" class="form-control" id="uid" style="width:78%; float: left;" placeholder="아이디 입력" name="uid" required>
             <input id="idck" type="button"  onclick="duplicationId();" class="btn btn-primary" style="width:20%; margin-left:10px; float:left; border-color: #343a40; background-color: #343a40;" value="중복확인"/>
@@ -89,6 +93,9 @@
   <!-- /.container -->
   <!-- Footer -->
  <c:import url="footer.jsp"></c:import>
+ 	<!--  Bootstrap core JavaScript-->
+<%-- 	<script src="<c:url value="/resources/vendor/jquery/jquery.min.js" />"></script> --%>
+	<script src="<c:url value="/resources/vendor/bootstrap/js/bootstrap.bundle.min.js" />"></script>
   <script>
   	$("#pwd").keyup(function(){
   		$("#registerButton").attr("disabled", true);
@@ -116,10 +123,11 @@
 				url : '/online/check/idcheck',
 				success : function(data) {
 					if(data > 0) {
-	  					alert('아이디가 존재합니다. 다른 아이디를 입력해주세요.');
+						alert('실패', '아이디가 존재합니다. 다른 아이디를 입력해주세요.', 'warning');
 	  					$("#uid").focus();
+	  					idck = 0;
 	  				} else {
-	  					alert('사용가능한 아이디입니다.');
+	  					alert('성공', '사용가능한 아이디입니다.', 'success');
 	  					$('#uid').focus();
 	  					idck = 1;
 	  				}
@@ -139,16 +147,17 @@
 				url : '/online/check/emailcheck',
 				success : function(data) {
 					if(data > 0) {
-	  					alert('이미 사용 중인 이메일입니다. 다른 이메일을 입력해주세요.');
+						alert('실패', '이미 사용 중인 이메일입니다. 다른 이메일을 입력해주세요.', 'warning');
 	  					$("#uemail").focus();
+	  					emailck = 0;
 	  				} else {
-	  					alert('사용가능한 이메일입니다.');
+	  					alert('성공', '사용가능한 이메일입니다.', 'success');
 	  					$('#uemail').focus();
 	  					emailck = 1;
 	  				}
 				},
 				error : function(error) {
-					alert('error : ' + error);
+					alert('실패', 'error : ' + error, 'error');
 				}
 			});
  	}
@@ -163,19 +172,45 @@
 				url : '/online/check/phonecheck',
 				success : function(data) {
 					if(data > 0) {
-	  					alert('번호가 사용중입니다. 다른 번호를 입력해주세요.');
+						alert('실패', '번호가 사용중입니다. 다른 번호를 입력해주세요.', 'warning');
 	  					$("#uphone").focus();
+	  					phoneck = 0;
 	  				} else {
-	  					alert('사용가능한 번호입니다.');
+	  					alert('성공', '사용가능한 번호입니다.', 'success');
 	  					$('#uphone').focus();
-	  					emailck = 1;
+	  					phoneck = 1;
 	  				}
 				},
 				error : function(error) {
-					alert('error : ' + error);
+					alert('실패', 'error : ' + error, 'error');
 				}
 			});
  	}
+ 	$('#uid').on('keyup', function() {
+		idck = 0;
+	});
+ 	$('#uemail').on('keyup', function() {
+ 		emailck = 0;
+	});
+ 	$('#uphone').on('keyup', function() {
+ 		phoneck = 0;
+	});
+ 	function registerCheck() {
+ 		if(idck == 0) {
+			alert('실패', '아이디 중복 여부를 확인해주세요.', 'warning');
+ 			return false;
+ 		}
+ 		if(emailck == 0) {
+ 			alert('실패', '이메일 중복 여부를 확인해주세요.', 'warning');
+ 			return false;
+ 		}
+ 		if(phoneck == 0) {
+ 			alert('실패', '핸드폰 중복 여부를 확인해주세요.', 'warning');
+ 			return false;
+ 		}
+ 		return true;
+ 	}
   </script>
+  
 </body>
 </html>

@@ -7,9 +7,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-<link rel="icon" type="image/png" sizes="64x64" href="${contextPath}/resources/image/classtok_favi4fa9.png" />
+<link rel="icon" type="image/png" sizes="64x64" href="${contextPath}/resources/image/favicon.png" />
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>클래스팡 :: MyOnlineClass</title>
 
 <!-- 폰트 스타일 시트 -->
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
@@ -32,19 +32,21 @@
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script src="https://use.fontawesome.com/releases/v5.2.0/js/all.js"></script>
 
-<!-- 다중 Autocomplete -->
+<!-- Autocomplete -->
 <script type="text/javascript">
-	$(function() {
-		$( "#searchKeyNav, #searchKeyBody" ).autocomplete({
-		  source: '${contextPath}/move/popular',
-		  delay: 200,
-		  select: function(event, ui) {
-		  	window.location.href = "detail?reserve=" + JSON.stringify(ui.item.value).replace(/\"/gi, "");
-		  }
-		});
-	});
+/*   
+   $(function() {
+      $( "#searchKey" ).autocomplete({
+        source: '${contextPath}/autoComplete',
+        delay: 200,
+        select: function(event, ui) {
+        	var url = '${contextPath}/search/'
+        	window.location.href = url + JSON.stringify(ui.item.value).replace(/\"/gi, "");
+        }
+      });
+   }); 
+*/
 </script>
-
 
 <style>
 body {
@@ -95,7 +97,7 @@ body {
 }
 
 body {
-	background: #eee;
+	background: #121212;
   	font-family: Noto Sans KR, sans-serif, Helvetica Neue, Helvetica, Arial !important;
   	font-size: 14px;
   	color: #000;
@@ -192,17 +194,17 @@ a#MOVE_TOP_BTN {
 
 }
 </style>
-<nav class="navbar navbar-expand-lg navbar-light fixed-top" style="background-color: #484848;">
+<nav class="navbar navbar-expand-lg navbar-light fixed-top" style="background-color: #121212;">
 		<div class="container">
 			<a class="navbar-brand" href="${contextPath}/">
-				<img src="${contextPath}/resources/image/ClassTok_logo_white.png" alt="클래스톡" class="logoImage">
+				<img src="${contextPath}/resources/image/Classpang_logo_white.png" alt="클래스팡" class="logoImage">
 			</a>
 			
 			<div class="ui-widget" style="padding-top: 15px;">
 				<form id="searchClass" method='GET' action="${contextPath}/search">
             		<label class="header__search-label" for="searchKey" >
                 		<input id="searchKeyNav" name="searchKey" type="text" placeholder="클래스나 코치를 검색해보세요" maxlength="20" autocomplete="off" onfocus="this.value=''" style="border:0; outline:0; width: 200px; padding-left:12px; color:white; font-size: 13px; background-color: hsla(0,0%,100%,.1); border-radius: 30px;">
-						<button type="submit" style="border:0; outline:0; background-color: #424242;">
+						<button type="submit" style="border:0; outline:0; background-color: #121212;">
 							<font color="white">
 							<i class="fas fa-search" onclick="search"></i>
 							</font>
